@@ -1,0 +1,15 @@
+.navigation-settings {
+    background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.801));
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding: 20px;
+    display: flex;
+
+    select {
+        padding: 2px 5px;
+        width: fit-content;
+        text-align: center;
+        border-radius: 10px;
+    }
+}

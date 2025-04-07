@@ -5,7 +5,7 @@ import logger from '../../../utils/logger';
 export async function POST(req: Request) {
   const body = await req.json();
 
-  const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY! });
+  const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY! })
 
   try {
     const chatResponse = await mistral.chat.complete({
@@ -20,6 +20,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       response: chatResponse.choices[0].message.content,
     });
+
   } catch (error) {
     logger.error('Mistral API error:', error)
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 })

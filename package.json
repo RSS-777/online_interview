@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@mistralai/mistralai": "^1.5.2",
+    "@reduxjs/toolkit": "^2.6.1",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "sass": "^1.86.3",
     "winston": "^3.17.0"
   },
   "devDependencies": {
