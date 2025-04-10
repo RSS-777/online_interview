@@ -1,15 +1,50 @@
 .navigation-settings {
-    background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.801));
     display: flex;
     justify-content: center;
     gap: 5px;
     padding: 20px;
     display: flex;
 
-    select {
+    div {
+        position: relative;
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translate(-50%);
+            width: 0;
+            height: 1px;
+            background-color: blue;
+            transition: width 0.5s ease-in;
+        }
+
+        &:hover::after {
+            width: 80%;
+        }
+    }
+
+    select,
+    button {
         padding: 2px 5px;
         width: fit-content;
         text-align: center;
         border-radius: 10px;
+        cursor: pointer;
+
+        &:hover {
+            color: blue;
+        }
     }
+
+    @media (max-width: 700px) {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+.navigation-settings-hide {
+    opacity: 0;
 }

@@ -1,3 +1,13 @@
+@keyframes move {
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
 .wrapper {
   background-image: url('/interview-fone.jpg');
   background-position: center;
@@ -6,10 +16,137 @@
   background-attachment: fixed;
   min-height: 100vh;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .main {
-  background-color: rgba(0, 0, 0, 0.787);
+  position: relative;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.397) 1%, rgba(0, 0, 0, 0.709) 60%);
+  border-top: 1px solid white;
   min-height: 300px;
   color: white;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.block-loading {
+  margin: auto;
+  width: 100%;
+  height: 100px;
+  position: relative;
+  overflow: hidden;
+
+  p {
+    text-align: center;
+    font-style: italic;
+    font-size: clamp(14px, 3vw, 22px);
+  }
+
+  .strip {
+    position: absolute;
+    width: 50%;
+    height: 10px;
+    background-image: linear-gradient(to right, transparent, red);
+    animation: move 1.5s infinite linear;
+  }
+}
+
+.section-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100vw;
+  padding: 10px;
+  flex: 1;
+  overflow: hidden;
+
+  .block-character {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    max-width: 650px;
+    width: 100%;
+  }
+
+  .text-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .question {
+      border: 2px solid rgb(241, 0, 0);
+      border-radius: 10px;
+      padding: 2px 5px;
+      width: 50%;
+      align-self: flex-start;
+    }
+
+    .answer {
+      border: 2px solid rgb(22, 140, 1);
+      border-radius: 10px;
+      padding: 2px 5px;
+      width: 50%;
+      align-self: flex-end;
+    }
+
+    .answer-empty {
+      width: 50%;
+      align-self: flex-end;
+    }
+
+    @media (max-width: 480px) {
+      .question {
+        width: 100%;
+      }
+
+      .answer {
+        width: 100%;
+      }
+    }
+  }
+
+  .disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}
+
+.block-button {
+  margin: 30px auto 0;
+  display: flex;
+  gap: 5px;
+
+  button {
+    position: relative;
+    padding: 2px 5px;
+    width: 150px;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+
+    &:hover {
+      color: blue;
+    }
+  }
+
+  button::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translate(-50%);
+    width: 0;
+    height: 1px;
+    background-color: blue;
+    transition: width 0.5s ease-in;
+  }
+
+  button:hover::after {
+    width: 80%;
+  }
 }

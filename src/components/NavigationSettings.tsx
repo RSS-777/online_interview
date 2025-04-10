@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+
 import { useDispatch, useSelector } from 'react-redux';
 import { setLanguage, setProfession, setCategory } from "@/store/settings/settingsSlice";
 import { AppDispatch, RootState } from "@/store/store";
@@ -32,7 +32,12 @@ const profession: TypeProfession = {
     dataScientist: ['Machine Learning', 'Deep Learning', 'Python', 'R', 'TensorFlow', 'Pandas', 'SQL', 'MongoDB', 'PostgreSQL']
 };
 
-export const NavigationSettings = () => {
+type TypeComponentProps = {
+    onClick: () => void;
+    hideSetting: boolean;
+};
+
+export const NavigationSettings = ({ onClick, hideSetting }: TypeComponentProps) => {
     const languageChoice = useSelector((state: RootState) => state.settings.language)
     const professionChoice = useSelector((state: RootState) => state.settings.profession)
     const categoryChoice = useSelector((state: RootState) => state.settings.category)
@@ -52,7 +57,7 @@ export const NavigationSettings = () => {
     }
 
     return (
-        <nav className={styles['navigation-settings']}>
+        <nav className={hideSetting ? styles['navigation-settings-hide'] : styles['navigation-settings']}>
             <div>
                 <select
                     name="language"
@@ -60,9 +65,9 @@ export const NavigationSettings = () => {
                     onChange={(e) => handleLanguageChoice(e.target.value)}
                 >
                     <option value="">Оберіть мову співбесіди</option>
-                    <option value="uk">Українська</option>
-                    <option value="ru">Русский</option>
-                    <option value="en">English</option>
+                    <option value="uk-UA">Українська</option>
+                    <option value="ru-RU">Русский</option>
+                    <option value="en-US">English</option>
                 </select>
             </div>
             {languageChoice &&
@@ -100,6 +105,11 @@ export const NavigationSettings = () => {
                         ))}
 
                     </select>
+                </div>
+            }
+            {languageChoice && professionChoice && categoryChoice &&
+                <div>
+                    <button onClick={onClick}>Почати співбесіду</button>
                 </div>
             }
         </nav>
