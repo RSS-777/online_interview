@@ -55,7 +55,6 @@ const Home = () => {
 
   const { isRecording, transcript, startRecording, stopRecording } = useVoiceRecorder({ languageChoice });
 
-  // Прочитати відразу запитання пізля рендеру!
   useEffect(() => {
     if ((question || requestQuestion) && start) {
 
@@ -69,13 +68,11 @@ const Home = () => {
     }
   }, [question, requestQuestion, start, isLastSpeaking]);
 
-  //Згенерувати список запитань для штучного інтелекту!
   useEffect(() => {
     const generateQuestion: string = `Напиши мені 25 запитань, які найчастіше задають на співбесідах для ${categoryChoice}, на мові ${languageChoice}. Будь ласка, не використовуйте занадто складні або специфічні питання, а надайте загальні питання, які зазвичай задають для цієї професії або категорії.`
     setQuestionGeneratorInput(generateQuestion)
   }, [languageChoice, professionChoice, categoryChoice])
 
-  // Згенерувати запитання чи вірна відповідь!
   useEffect(() => {
     if (answer) {
       const check = `Питання: ${question}. Моя відповідь: ${answer}. Чи правильна ця відповідь? Відповідай чітко, коротко і без зайвих пояснень на ${languageChoice} мовою..`;
@@ -83,7 +80,6 @@ const Home = () => {
     }
   }, [answer, questionToCheck]);
 
-  // записати  питання з списку запитань
   useEffect(() => {
     if (start && requestQuestionsList.length > 0) {
       setQuestion(requestQuestionsList[countQuestionRef.current])
@@ -95,7 +91,7 @@ const Home = () => {
     setNextQuestion(false)
   }, [requestQuestionsList, nextQuestion, start]);
 
-  // Записати відповідь в стейт!
+
   useEffect(() => {
     if (!isRecording && transcript) {
       setAnswer(transcript)
@@ -103,14 +99,12 @@ const Home = () => {
     }
   }, [isRecording, transcript])
 
-  // Зробити запит на провірку відповіді!
   useEffect(() => {
     if (questionToCheck) {
       handleSubmit();
     }
   }, [questionToCheck]);
 
-  //Запуск запису голосу
   const handleStartRecordingVoice = () => {
     if (isRecording) {
       stopRecording()
@@ -122,7 +116,6 @@ const Home = () => {
     }
   }
 
-  //Функція запит до сервера
   const handleSubmit = async () => {
     setStart(true)
     const res = await fetch('/api/ai', {
@@ -155,7 +148,6 @@ const Home = () => {
     }
   };
 
-  //Запустити читання запитання АІ
   const handleSpeekAi = () => {
     if (aiElementRef.current) {
       aiElementRef.current.classList.add(stylesTalking['ai-container-active'])
@@ -167,7 +159,6 @@ const Home = () => {
     }
   }
 
-  //Функція Наступне питання
   const handleNextAnswer = () => {
     countQuestionRef.current += 1;
     setAnswer('')
@@ -182,7 +173,6 @@ const Home = () => {
     }
   }
 
-  //Зупинити співбесіду
   const handleStop = () => {
     speechSynthesis.cancel();
     setIsSpeaking(false);
