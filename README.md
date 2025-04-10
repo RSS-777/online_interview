@@ -8,9 +8,10 @@ where mistakes are experience, and experience is the power that helps unlock you
 
 ## 💡 About the Project
 
-This app allows you to undergo an interview with AI interactively.  
-The user can choose:
+This app allows you to undergo an interactive interview with AI.
+You can communicate with the AI using your voice, and it will ask you questions directly related to the chosen profession, staying on-topic throughout the conversation. The AI will guide the interview without straying from the relevant subject matter, providing a focused and meaningful experience.
 
+The user can choose:
 - **Language**: 🇺🇦 Ukrainian, 🇷🇺 Russian, 🇬🇧 English
 - **Profession**: Frontend / Backend / Fullstack / DevOps / QA / PM / Designer / Data Scientist, etc.
 - **Knowledge Category** within the chosen profession

@@ -71,7 +71,7 @@ const Home = () => {
 
   //Згенерувати список запитань для штучного інтелекту!
   useEffect(() => {
-    const generateQuestion: string = `Напиши мені 10 запитань, які найчастіше задають на співбесідах для ${categoryChoice}, на мові ${languageChoice}. Будь ласка, не використовуйте занадто складні або специфічні питання, а надайте загальні питання, які зазвичай задають для цієї професії або категорії.`
+    const generateQuestion: string = `Напиши мені 25 запитань, які найчастіше задають на співбесідах для ${categoryChoice}, на мові ${languageChoice}. Будь ласка, не використовуйте занадто складні або специфічні питання, а надайте загальні питання, які зазвичай задають для цієї професії або категорії.`
     setQuestionGeneratorInput(generateQuestion)
   }, [languageChoice, professionChoice, categoryChoice])
 
@@ -138,9 +138,9 @@ const Home = () => {
     const data = await res.json();
 
     if (data) {
-      questionToCheck ? (
+      if (questionToCheck) {
         setRequestQuestion(data.response.replace(/\*\*/g, '').trim())
-      ) : (
+      } else {
         setRequestQuestionsList(data.response
           .split('\n')
           .filter((line: string) => /^\d+\.\s/.test(line))
@@ -151,7 +151,7 @@ const Home = () => {
               .trim()
           )
         )
-      )
+      }
     }
   };
 
@@ -184,9 +184,9 @@ const Home = () => {
 
   //Зупинити співбесіду
   const handleStop = () => {
-    speechSynthesis.cancel(); 
-    setIsSpeaking(false);    
-    setRequestQuestionsList([]); 
+    speechSynthesis.cancel();
+    setIsSpeaking(false);
+    setRequestQuestionsList([]);
     setRequestQuestion('');
     setQuestionToCheck('')
     setQuestion('');
@@ -234,6 +234,3 @@ const Home = () => {
 };
 
 export default Home;
-
-
-

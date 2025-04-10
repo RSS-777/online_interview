@@ -17,3 +17,5 @@ export const TalkingCharacter = forwardRef<HTMLDivElement, TypeTalkingCharacterP
       </div>
     );
   });
+
+  TalkingCharacter.displayName = 'TalkingCharacter';
