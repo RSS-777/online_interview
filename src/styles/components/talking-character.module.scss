@@ -75,6 +75,24 @@
     }
 }
 
+
+@media (pointer: coarse), (hover: none) {
+    .ai-container::before,
+    .user-container::before {
+        background-image: none;
+        opacity: 1;
+    }
+
+    .ai-container:hover,
+    .user-container:hover {
+        &::before {
+            background-image: none;
+            opacity: 1;
+        }
+    }
+}
+
+
 .ai-container-active {
     &::after {
         background: conic-gradient(from 90deg, transparent 0%, red 100%);
@@ -99,33 +117,3 @@
     }
 }
 
-@media (pointer: coarse) {
-    .ai-container {
-        border: 5px solid rgb(248, 123, 123);
-        color: red;
-    
-    
-        &:active {
-            &::before {
-                background-image: url('/thumbnail.png');
-                background-position: center;
-                background-size: cover;
-                opacity: 0.3;
-            }
-        }
-    }
-    
-    .user-container {
-        border: 5px solid rgb(158, 255, 158);
-        color: rgb(4, 213, 4);
-    
-        &:active {
-            &::before {
-                background-image: url('/mic.png');
-                background-position: center;
-                background-size: cover;
-                opacity: 0.3;
-            }
-        }
-    }
-}

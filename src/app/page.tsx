@@ -4,6 +4,7 @@ import styles from '../styles/pages/home.module.scss';
 import stylesTalking from '../styles/components/talking-character.module.scss';
 import { Header } from '../components/Header';
 import { NavigationSettings } from '../components/NavigationSettings';
+import { InformationProfession } from '../components/InformationProfession';
 import { useSelector } from 'react-redux';
 import { RootState } from "@/store/store";
 import { TalkingCharacter } from '../components/TalkingCharacter';
@@ -31,7 +32,6 @@ const speakText = ({ question, requestQuestion, languageChoice, aiElementRef, se
     aiElementRef.current?.classList.remove(stylesTalking['ai-container-active'])
   };
 };
-
 
 const Home = () => {
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
@@ -188,6 +188,7 @@ const Home = () => {
   return (
     <div className={styles.wrapper}>
       <Header />
+      <InformationProfession hideInfo={start} />
       <NavigationSettings onClick={handleSubmit} hideSetting={start} />
       <main className={styles.main}>
         {start &&
