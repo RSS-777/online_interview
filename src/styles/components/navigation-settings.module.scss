@@ -3,7 +3,6 @@
     justify-content: center;
     gap: 5px;
     padding: 20px;
-    display: flex;
 
     div {
         position: relative;
@@ -46,5 +45,5 @@
 }
 
 .navigation-settings-hide {
-    opacity: 0;
+    display: none;
 }

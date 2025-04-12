@@ -16,18 +16,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    z-index: 1;
     cursor: pointer;
-
-    &::after {
-        content: '';
-        position: absolute;
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        animation: rotateAnimation 2s linear infinite;
-        z-index: 3;
-    }
 
     &::before {
         content: '';
@@ -36,84 +26,91 @@
         left: 0;
         width: 100%;
         height: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 50%;
+    }
+
+    .effect-animation {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        animation: rotateAnimation 2s linear infinite;
+        z-index: 2;
+    }
+
+    .effect-background {
+        position: absolute;
+        width: 140px;
+        height: 140px;
         background-color: rgb(162, 225, 255);
         border-radius: 50%;
+        z-index: 3;
+    }
+
+    .effect-hover {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-position: center;
+        background-size: cover;
+        opacity: 0.3;
         z-index: 4;
     }
 
     span {
-        z-index: 5;
+        z-index: 6;
     }
-}
 
-.ai-container {
-    border: 5px solid rgb(248, 123, 123);
-    color: red;
+    &.ai-container {
+        border: 5px solid rgb(248, 123, 123);
+        color: red;
 
-
-    &:hover {
-        &::before {
+        &:hover .effect-hover {
             background-image: url('/thumbnail.png');
-            background-position: center;
-            background-size: cover;
-            opacity: 0.3;
+        }
+
+        &.ai-container-active {
+            .effect-animation {
+                background: conic-gradient(from 90deg, transparent 0%, red 100%);
+            }
+
+            &::before {
+                background-image: url('/equalizer.gif');
+                z-index: 5;
+            }
         }
     }
-}
 
-.user-container {
-    border: 5px solid rgb(158, 255, 158);
-    color: rgb(4, 213, 4);
+    &.user-container {
+        border: 5px solid rgb(158, 255, 158);
+        color: rgb(4, 213, 4);
 
-    &:hover {
-        &::before {
+        &:hover .effect-hover {
             background-image: url('/mic.png');
-            background-position: center;
-            background-size: cover;
-            opacity: 0.3;
+        }
+
+        &.user-container-active {
+            .effect-animation {
+                background: conic-gradient(from 90deg, transparent 0%, green 100%);
+            }
+
+            &::before {
+                background-image: url('/equalizer.gif');
+                z-index: 5;
+            }
         }
     }
 }
 
-
-@media (pointer: coarse), (hover: none) {
-    .ai-container::before,
-    .user-container::before {
-        background-image: none;
-        opacity: 1;
-    }
-
-    .ai-container:hover,
-    .user-container:hover {
-        &::before {
-            background-image: none;
-            opacity: 1;
+@media (pointer: coarse) {
+    .container {
+        .effect-hover {
+            opacity: 0;
+            z-index: -1;
         }
     }
 }
-
-
-.ai-container-active {
-    &::after {
-        background: conic-gradient(from 90deg, transparent 0%, red 100%);
-    }
-
-    &::before {
-        background-image: url('/equalizer.gif');
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-}
-
-.user-container-active {
-    &::after {
-        background: conic-gradient(from 90deg, transparent 0%, green 100%);
-    }
-
-    &::before {
-        background-image: url('/equalizer.gif');
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-}
-

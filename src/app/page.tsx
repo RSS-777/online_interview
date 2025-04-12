@@ -91,7 +91,6 @@ const Home = () => {
     setNextQuestion(false)
   }, [requestQuestionsList, nextQuestion, start]);
 
-
   useEffect(() => {
     if (!isRecording && transcript) {
       setAnswer(transcript)

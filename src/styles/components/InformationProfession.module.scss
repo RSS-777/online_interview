@@ -1,18 +1,22 @@
 @keyframes animationText {
     0% {
         left: -100%;
+        height: auto;
     }
 
     20% {
         left: 0;
+        height: auto;
     }
 
     80% {
         left: 0;
+        height: auto;
     }
 
     100% {
         left: 200%;
+        height: auto;
     }
 }
 
@@ -50,6 +54,7 @@
             position: relative;
             text-align: center;
             width: 100%;
+            height: 0;
             max-width: 100%;
             padding: 10px;
             color: black;
@@ -59,7 +64,7 @@
         }
 
         .show-element {
-            animation: animationText 4s forwards;
+            animation: animationText 5s;
         }
     }
 }
