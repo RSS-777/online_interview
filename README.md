@@ -41,5 +41,5 @@ This is a demo project and the paid LLM APIs were not used to avoid unnecessary 
 <div style="display: flex; gap: 8px; flex-direction: column;">
     <img src="./public/screenshots/Screenshot 1.png" />
     <img src="./public/screenshots/Screenshot 2.png" />
-    <img src="./public/screenshots/Screenshot 3.jpg" />
+    <img src="./public/screenshots/Screenshot 3.png" />
 </div>
