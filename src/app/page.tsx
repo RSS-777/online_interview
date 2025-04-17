@@ -49,7 +49,7 @@ const Home = () => {
   const professionChoice = useSelector((state: RootState) => state.settings.profession)
   const categoryChoice = useSelector((state: RootState) => state.settings.category)
   const quantityQuestion = useSelector((state: RootState) => state.settings.quantity)
-console.log(requestQuestionsList)
+
   const countQuestionRef = useRef<number>(0)
   const aiElementRef = useRef<HTMLDivElement | null>(null)
   const userElementRef = useRef<HTMLDivElement | null>(null)
