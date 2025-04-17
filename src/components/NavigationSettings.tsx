@@ -1,9 +1,8 @@
 "use client"
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setLanguage, setProfession, setCategory } from "@/store/settings/settingsSlice";
+import { setLanguage, setProfession, setCategory, setQuantityQuestion } from "@/store/settings/settingsSlice";
 import { AppDispatch, RootState } from "@/store/store";
-
 import styles from '../styles/components/navigation-settings.module.scss';
 
 export type TypeProfession = {
@@ -29,7 +28,12 @@ export const NavigationSettings = ({ onClick, hideSetting }: TypeComponentProps)
     const languageChoice = useSelector((state: RootState) => state.settings.language)
     const professionChoice = useSelector((state: RootState) => state.settings.profession)
     const categoryChoice = useSelector((state: RootState) => state.settings.category)
+    const quantityQuestion = useSelector((state: RootState) => state.settings.quantity)
     const dispatch = useDispatch<AppDispatch>()
+
+    const handleNumberQuestion = (num: number | null) => {
+        dispatch(setQuantityQuestion(num))
+    }
 
     const handleLanguageChoice = (value: string) => {
         dispatch(setLanguage(value))
@@ -52,7 +56,7 @@ export const NavigationSettings = ({ onClick, hideSetting }: TypeComponentProps)
                     id="language"
                     onChange={(e) => handleLanguageChoice(e.target.value)}
                 >
-                    <option value="">Оберіть мову співбесіди</option>
+                    <option value="">Мова спілкування</option>
                     <option value="uk-UA">Українська</option>
                     <option value="ru-RU">Русский</option>
                     <option value="en-US">English</option>
@@ -66,7 +70,7 @@ export const NavigationSettings = ({ onClick, hideSetting }: TypeComponentProps)
                         id="profession"
                         onChange={(e) => handleProfessionChoice(e.target.value)}
                     >
-                        <option value="">Виберіть професію</option>
+                        <option value="">Професія</option>
                         <option value="frontend">Фронтенд розробник</option>
                         <option value="backend">Бекенд розробник</option>
                         <option value="mobile">Мобільний розробник</option>
@@ -91,6 +95,24 @@ export const NavigationSettings = ({ onClick, hideSetting }: TypeComponentProps)
                 </div>
             }
             {languageChoice && professionChoice && categoryChoice &&
+                <div>
+                    <select
+                        name="numberQuestions"
+                        id="number-questions"
+                        onChange={(e) => {
+                            const value = e.target.value
+                            handleNumberQuestion(value === '' ? null : Number(value))
+                        }}
+                    >
+                        <option value="">Кількість запитань</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            }
+            {languageChoice && professionChoice && categoryChoice && quantityQuestion &&
                 <div>
                     <button onClick={onClick}>Почати співбесіду</button>
                 </div>

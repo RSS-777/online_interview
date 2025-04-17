@@ -48,7 +48,8 @@ const Home = () => {
   const languageChoice = useSelector((state: RootState) => state.settings.language)
   const professionChoice = useSelector((state: RootState) => state.settings.profession)
   const categoryChoice = useSelector((state: RootState) => state.settings.category)
-
+  const quantityQuestion = useSelector((state: RootState) => state.settings.quantity)
+console.log(requestQuestionsList)
   const countQuestionRef = useRef<number>(0)
   const aiElementRef = useRef<HTMLDivElement | null>(null)
   const userElementRef = useRef<HTMLDivElement | null>(null)
@@ -69,9 +70,9 @@ const Home = () => {
   }, [question, requestQuestion, start, isLastSpeaking]);
 
   useEffect(() => {
-    const generateQuestion: string = `Напиши мені 10 запитань, які найчастіше задають на співбесідах для ${categoryChoice}, на мові ${languageChoice}. Будь ласка, не використовуйте занадто складні або специфічні питання, а надайте загальні питання, які зазвичай задають для цієї професії або категорії.`
+    const generateQuestion = `Згенеруй ${quantityQuestion} коротких типових запитань, які найчастіше задають на співбесідах для професії "${professionChoice}", яка працює з технологією "${categoryChoice}". Формулюй запитання мовою ${languageChoice}, орієнтуючись на актуальні знання та практики.`;
     setQuestionGeneratorInput(generateQuestion)
-  }, [languageChoice, professionChoice, categoryChoice]);
+  }, [languageChoice, professionChoice, categoryChoice, quantityQuestion]);
 
   useEffect(() => {
     if (answer) {
@@ -129,6 +130,14 @@ const Home = () => {
         }),
       });
 
+      if (res.status === 504) {
+        throw new Error('Сервер не відповів вчасно (504). Спробуйте пізніше або зменшіть кількість запитань.');
+      }
+  
+      if (!res.ok) {
+        throw new Error(`Сталася помилка: ${res.status} ${res.statusText}`);
+      }
+
       const data = await res.json();
 
       if (data) {
@@ -151,7 +160,7 @@ const Home = () => {
       if (error instanceof Error) {
         setErrorMessage(error.message)
       } else {
-        setErrorMessage('An unknown error occurred');
+        setErrorMessage('Виникла невідома помилка. Спробуйте ще раз.');
       }
     }
   };

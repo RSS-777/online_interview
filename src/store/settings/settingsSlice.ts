@@ -4,12 +4,14 @@ type TypeState = {
     language: string;
     profession: string;
     category: string;
+    quantity: number | null;
 }
 
 const initialState: TypeState = {
     language: '',
     profession: '',
-    category: ''
+    category: '',
+    quantity: null
 };
 
 const settingsSlice = createSlice({
@@ -24,9 +26,12 @@ const settingsSlice = createSlice({
         },
         setCategory(state, action: PayloadAction<string>) {
             state.category = action.payload
+        },
+        setQuantityQuestion(state, action: PayloadAction<number | null>) {
+            state.quantity = action.payload
         }
     },
 });
 
-export const { setLanguage, setProfession, setCategory } = settingsSlice.actions;
+export const { setLanguage, setProfession, setCategory, setQuantityQuestion } = settingsSlice.actions;
 export default settingsSlice.reducer;
