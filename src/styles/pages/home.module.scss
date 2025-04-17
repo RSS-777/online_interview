@@ -46,6 +46,10 @@
     font-size: clamp(14px, 3vw, 22px);
   }
 
+  .message-error {
+    color: red;
+  }
+
   .strip {
     position: absolute;
     width: 50%;
@@ -110,6 +114,15 @@
     }
   }
 
+  .message-error {
+    color: red;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .disabled {
     pointer-events: none;
     opacity: 0.5;
@@ -150,3 +163,6 @@
     width: 80%;
   }
 }
+
+
+

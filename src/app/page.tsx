@@ -44,7 +44,7 @@ const Home = () => {
   const [answer, setAnswer] = useState<string>('')
   const [start, setStart] = useState<boolean>(false);
   const [nextQuestion, setNextQuestion] = useState<boolean>(false)
-
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const languageChoice = useSelector((state: RootState) => state.settings.language)
   const professionChoice = useSelector((state: RootState) => state.settings.profession)
   const categoryChoice = useSelector((state: RootState) => state.settings.category)
@@ -69,7 +69,7 @@ const Home = () => {
   }, [question, requestQuestion, start, isLastSpeaking]);
 
   useEffect(() => {
-    const generateQuestion: string = `Напиши мені 10 запитань, які найчастіше задають на співбесідах для ${categoryChoice}, на мові ${languageChoice}. Будь ласка, не використовуйте занадто складні або специфічні питання, а надайте загальні питання, які зазвичай задають для цієї професії або категорії.`
+    const generateQuestion: string = `Напиши мені 20 запитань, які найчастіше задають на співбесідах для ${categoryChoice}, на мові ${languageChoice}. Будь ласка, не використовуйте занадто складні або специфічні питання, а надайте загальні питання, які зазвичай задають для цієї професії або категорії.`
     setQuestionGeneratorInput(generateQuestion)
   }, [languageChoice, professionChoice, categoryChoice])
 
@@ -117,32 +117,41 @@ const Home = () => {
 
   const handleSubmit = async () => {
     setStart(true)
-    const res = await fetch('/api/ai', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [
-          { role: 'user', content: questionToCheck ? questionToCheck : questionGeneratorInput }
-        ],
-      }),
-    });
 
-    const data = await res.json();
+    try {
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            { role: 'user', content: questionToCheck ? questionToCheck : questionGeneratorInput }
+          ],
+        }),
+      });
 
-    if (data) {
-      if (questionToCheck) {
-        setRequestQuestion(data.response.replace(/\*\*/g, '').trim())
-      } else {
-        setRequestQuestionsList(data.response
-          .split('\n')
-          .filter((line: string) => /^\d+\.\s/.test(line))
-          .map((line: string) =>
-            line
-              .replace(/^\d+\.\s*/, '')
-              .replace(/\*\*/g, '')
-              .trim()
+      const data = await res.json();
+
+      if (data) {
+        if (questionToCheck) {
+          setRequestQuestion(data.response.replace(/\*\*/g, '').trim())
+        } else {
+          setRequestQuestionsList(data.response
+            .split('\n')
+            .filter((line: string) => /^\d+\.\s/.test(line))
+            .map((line: string) =>
+              line
+                .replace(/^\d+\.\s*/, '')
+                .replace(/\*\*/g, '')
+                .trim()
+            )
           )
-        )
+        }
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message)
+      } else {
+        setErrorMessage('An unknown error occurred');
       }
     }
   };
@@ -182,6 +191,7 @@ const Home = () => {
     setAnswer('');
     setStart(false);
     setLastSpeaking(false);
+    setErrorMessage('')
   };
 
   return (
@@ -195,20 +205,32 @@ const Home = () => {
             {requestQuestionsList.length === 0
               ? (
                 <section className={styles['block-loading']}>
-                  <p>Тільки не панікуйте… ще є шанс втекти. Жартую — вже пізно 😁 Починаємо!</p>
+                  {errorMessage ? (
+                    <p className={styles['message-error']}>{errorMessage}</p>
+                  ) : (
+                    <p >Тільки не панікуйте… ще є шанс втекти. Жартую — вже пізно 😁 Починаємо!</p>
+                  )
+                  }
                   <div className={styles.strip}></div>
                 </section>
               ) : (
                 <section className={styles['section-content']}>
                   <>
-                    <div className={(isRecording || isSpeaking || answer) ? `${styles['block-character']} ${styles.disabled}` : `${styles['block-character']}`}>
-                      <TalkingCharacter person='aiSpeechBubble' ref={aiElementRef} onClick={handleSpeekAi} />
-                      <TalkingCharacter person='userSpeechBubble' ref={userElementRef} onClick={handleStartRecordingVoice} />
-                    </div>
-                    <div className={styles['text-block']}>
-                      <p className={styles.question}>{requestQuestion ? requestQuestion : question}</p>
-                      <p className={answer ? styles.answer : styles['answer-empty']}>{answer}</p>
-                    </div>
+                    {!errorMessage ? (
+                      <>
+                        <div className={(isRecording || isSpeaking || answer) ? `${styles['block-character']} ${styles.disabled}` : `${styles['block-character']}`}>
+                          <TalkingCharacter person='aiSpeechBubble' ref={aiElementRef} onClick={handleSpeekAi} />
+                          <TalkingCharacter person='userSpeechBubble' ref={userElementRef} onClick={handleStartRecordingVoice} />
+                        </div>
+                        <div className={styles['text-block']}>
+                          <p className={styles.question}>{requestQuestion ? requestQuestion : question}</p>
+                          <p className={answer ? styles.answer : styles['answer-empty']}>{answer}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <p className={styles['message-error']}>{errorMessage}</p>
+                    )}
+
                   </>
                   <div className={styles['block-button']}>
                     <button onClick={handleNextAnswer}>Наступне питання</button>
