@@ -69,9 +69,9 @@ const Home = () => {
   }, [question, requestQuestion, start, isLastSpeaking]);
 
   useEffect(() => {
-    const generateQuestion: string = `Напиши мені 20 запитань, які найчастіше задають на співбесідах для ${categoryChoice}, на мові ${languageChoice}. Будь ласка, не використовуйте занадто складні або специфічні питання, а надайте загальні питання, які зазвичай задають для цієї професії або категорії.`
+    const generateQuestion: string = `Напиши мені 10 запитань, які найчастіше задають на співбесідах для ${categoryChoice}, на мові ${languageChoice}. Будь ласка, не використовуйте занадто складні або специфічні питання, а надайте загальні питання, які зазвичай задають для цієї професії або категорії.`
     setQuestionGeneratorInput(generateQuestion)
-  }, [languageChoice, professionChoice, categoryChoice])
+  }, [languageChoice, professionChoice, categoryChoice]);
 
   useEffect(() => {
     if (answer) {
@@ -96,7 +96,7 @@ const Home = () => {
       setAnswer(transcript)
       userElementRef.current?.classList.remove(stylesTalking['user-container-active']);
     }
-  }, [isRecording, transcript])
+  }, [isRecording, transcript]);
 
   useEffect(() => {
     if (questionToCheck) {
@@ -113,7 +113,7 @@ const Home = () => {
         userElementRef.current.classList.add(stylesTalking['user-container-active']);
       }
     }
-  }
+  };
 
   const handleSubmit = async () => {
     setStart(true)
