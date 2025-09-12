@@ -1,8 +1,8 @@
 "use client"
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setLanguage, setProfession, setCategory, setQuantityQuestion } from "@/store/settings/settingsSlice";
-import { AppDispatch, RootState } from "@/store/store";
+import { setLanguage, setProfession, setCategory, setQuantityQuestion } from "../store/settings/settingsSlice";
+import { AppDispatch, RootState } from "../store/store";
 import styles from '../styles/components/navigation-settings.module.scss';
 
 export type TypeProfession = {

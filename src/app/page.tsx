@@ -6,9 +6,9 @@ import { Header } from '../components/Header';
 import { NavigationSettings } from '../components/NavigationSettings';
 import { InformationProfession } from '../components/InformationProfession';
 import { useSelector } from 'react-redux';
-import { RootState } from "@/store/store";
+import { RootState } from "../store/store";
 import { TalkingCharacter } from '../components/TalkingCharacter';
-import { useVoiceRecorder } from '@/hooks/useVoiceRecorder';
+import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
 
 type TypeSpeakTextProps = {
   question?: string;
