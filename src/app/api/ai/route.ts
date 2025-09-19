@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { Mistral } from "@mistralai/mistralai";
 import logger from "../../../utils/logger";
 
+type TypeMistralError = {
+  statusCode?: number;
+  message?: string;
+};
+
 export async function POST(req: Request) {
   const body = await req.json();
 
@@ -23,18 +28,19 @@ export async function POST(req: Request) {
     return NextResponse.json({
       response: chatResponse.choices[0].message.content,
     });
-  } catch (error: any) {
-    logger.error("Mistral API error:", error);
+  } catch (error) {
+    const e = error as TypeMistralError
+    logger.error("Mistral API error:", e);
 
-    if (error?.statusCode === 429) {
+    if (e?.statusCode === 429) {
       return NextResponse.json(
-        { error: "Rate limit exceeded. Please try again later." },
+        { e: "Rate limit exceeded. Please try again later." },
         { status: 429 }
       );
     }
 
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { e: "Something went wrong" },
       { status: 500 }
     );
   }
