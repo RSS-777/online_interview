@@ -6,7 +6,7 @@ where mistakes are experience, and experience is the power that helps unlock you
 
 ---
 
-[Try it now](https://test-project.if.ua/)
+[Try it now]()
 
 ---
 
