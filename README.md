@@ -6,9 +6,6 @@ where mistakes are experience, and experience is the power that helps unlock you
 
 ---
 
-[Try it now]()
-
----
 
 ## 💡 About the Project
 
