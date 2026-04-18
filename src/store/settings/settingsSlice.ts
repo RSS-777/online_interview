@@ -1,17 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type TypeState = {
+type InterviewSettingsState = {
     language: string;
-    profession: string;
-    category: string;
-    quantity: number | null;
+    specialization: string;
+    technology: string;
+    questionCount: number | null;
 }
 
-const initialState: TypeState = {
+const initialState: InterviewSettingsState = {
     language: '',
-    profession: '',
-    category: '',
-    quantity: null
+    specialization: '',
+    technology: '',
+    questionCount: null
 };
 
 const settingsSlice = createSlice({
@@ -21,17 +21,17 @@ const settingsSlice = createSlice({
         setLanguage(state, action: PayloadAction<string>) {
             state.language = action.payload
         },
-        setProfession(state, action: PayloadAction<string>) {
-            state.profession = action.payload
+        setSpecialization(state, action: PayloadAction<string>) {
+            state.specialization = action.payload
         },
-        setCategory(state, action: PayloadAction<string>) {
-            state.category = action.payload
+        setTechnology(state, action: PayloadAction<string>) {
+            state.technology = action.payload
         },
-        setQuantityQuestion(state, action: PayloadAction<number | null>) {
-            state.quantity = action.payload
+        setQuestionCount(state, action: PayloadAction<number | null>) {
+            state.questionCount = action.payload
         }
     },
 });
 
-export const { setLanguage, setProfession, setCategory, setQuantityQuestion } = settingsSlice.actions;
+export const { setLanguage, setSpecialization, setTechnology, setQuestionCount } = settingsSlice.actions;
 export default settingsSlice.reducer;

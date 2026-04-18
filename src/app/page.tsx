@@ -1,161 +1,170 @@
 "use client"
-import { useState, useEffect, useRef, RefObject } from 'react';
-import styles from '../styles/pages/home.module.scss';
-import stylesTalking from '../styles/components/talking-character.module.scss';
-import { Header } from '../components/Header';
-import { NavigationSettings } from '../components/NavigationSettings';
-import { InformationProfession } from '../components/InformationProfession';
+
+import { RefObject, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from "../store/store";
+import { Header } from '../components/Header';
+import { InformationSpecialization } from '../components/InformationSpecialization';
+import { NavigationSettings } from '../components/NavigationSettings';
 import { TalkingCharacter } from '../components/TalkingCharacter';
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
+import stylesTalking from '../styles/components/talking-character.module.scss';
+import styles from '../styles/pages/home.module.scss';
+import { RootState } from "../store/store";
 
-type TypeSpeakTextProps = {
+type SpeakTextParams = {
   question?: string;
-  requestQuestion?: string;
-  languageChoice: string;
-  aiElementRef: RefObject<HTMLElement | null>;
+  feedback?: string;
+  language: string;
+  aiBubbleRef: RefObject<HTMLElement | null>;
   setIsSpeaking: React.Dispatch<React.SetStateAction<boolean>>;
-  setLastSpeaking: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLastSpeaking: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const speakText = ({ question, requestQuestion, languageChoice, aiElementRef, setIsSpeaking, setLastSpeaking }: TypeSpeakTextProps) => {
-  if (requestQuestion) setLastSpeaking(true)
-  const textToSpeak = question || requestQuestion;
+const speakText = ({
+  question,
+  feedback,
+  language,
+  aiBubbleRef,
+  setIsSpeaking,
+  setIsLastSpeaking
+}: SpeakTextParams) => {
+  if (feedback) setIsLastSpeaking(true)
+
+  const textToSpeak = question || feedback;
   const utterance = new SpeechSynthesisUtterance(textToSpeak);
-  utterance.lang = languageChoice;
+  utterance.lang = language;
   setIsSpeaking(true)
   speechSynthesis.speak(utterance);
 
   utterance.onend = () => {
     setIsSpeaking(false)
-    aiElementRef.current?.classList.remove(stylesTalking['ai-container-active'])
+    aiBubbleRef.current?.classList.remove(stylesTalking['ai-container-active'])
   };
 };
 
 const Home = () => {
-  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
-  const [isLastSpeaking, setLastSpeaking] = useState<boolean>(false)
-  const [questionGeneratorInput, setQuestionGeneratorInput] = useState<string>('')
-  const [questionToCheck, setQuestionToCheck] = useState<string>('')
-  const [requestQuestionsList, setRequestQuestionsList] = useState<string[] | []>([])
-  const [requestQuestion, setRequestQuestion] = useState<string>('')
-  const [question, setQuestion] = useState<string>('')
-  const [answer, setAnswer] = useState<string>('')
-  const [start, setStart] = useState<boolean>(false);
-  const [nextQuestion, setNextQuestion] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string>('')
-  const languageChoice = useSelector((state: RootState) => state.settings.language)
-  const professionChoice = useSelector((state: RootState) => state.settings.profession)
-  const categoryChoice = useSelector((state: RootState) => state.settings.category)
-  const quantityQuestion = useSelector((state: RootState) => state.settings.quantity)
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isLastSpeaking, setIsLastSpeaking] = useState(false)
+  const [interviewQuestionsPrompt, setInterviewQuestionsPrompt] = useState('')
+  const [answerReviewPrompt, setAnswerReviewPrompt] = useState('')
+  const [generatedQuestions, setGeneratedQuestions] = useState<string[]>([])
+  const [aiFeedback, setAiFeedback] = useState('')
+  const [currentQuestion, setCurrentQuestion] = useState('')
+  const [currentAnswer, setCurrentAnswer] = useState('')
+  const [interviewStarted, setInterviewStarted] = useState(false);
+  const [shouldAdvanceQuestion, setShouldAdvanceQuestion] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const countQuestionRef = useRef<number>(0)
-  const aiElementRef = useRef<HTMLDivElement | null>(null)
-  const userElementRef = useRef<HTMLDivElement | null>(null)
+  const selectedLanguage = useSelector((state: RootState) => state.settings.language)
+  const selectedSpecialization = useSelector((state: RootState) => state.settings.specialization)
+  const selectedTechnology = useSelector((state: RootState) => state.settings.technology)
+  const selectedQuestionCount = useSelector((state: RootState) => state.settings.questionCount)
 
-  const { isRecording, transcript, startRecording, stopRecording } = useVoiceRecorder({ languageChoice });
+  const currentQuestionIndexRef = useRef(0)
+  const aiBubbleRef = useRef<HTMLDivElement | null>(null)
+  const userBubbleRef = useRef<HTMLDivElement | null>(null)
+
+  const { isRecording, transcript, startRecording, stopRecording } = useVoiceRecorder({ languageChoice: selectedLanguage });
 
   useEffect(() => {
-    if ((question || requestQuestion) && start) {
-
-      if ((question || requestQuestion) && start && !isLastSpeaking) {
-        handleSpeekAi();
+    if ((currentQuestion || aiFeedback) && interviewStarted) {
+      if (!isLastSpeaking) {
+        handleSpeakAi();
       }
 
-      if (requestQuestion) {
-        setQuestion('')
+      if (aiFeedback) {
+        setCurrentQuestion('')
       }
     }
-  }, [question, requestQuestion, start, isLastSpeaking]);
+  }, [currentQuestion, aiFeedback, interviewStarted, isLastSpeaking]);
 
   useEffect(() => {
-    const generateQuestion = `Згенеруй ${quantityQuestion} коротких типових запитань, які найчастіше задають на співбесідах для професії "${professionChoice}", яка працює з технологією "${categoryChoice}". Формулюй запитання мовою ${languageChoice}, орієнтуючись на актуальні знання та практики.`;
-    setQuestionGeneratorInput(generateQuestion)
-  }, [languageChoice, professionChoice, categoryChoice, quantityQuestion]);
+    const prompt = `Згенеруй ${selectedQuestionCount} коротких типових запитань, які найчастіше ставлять на співбесідах для спеціалізації "${selectedSpecialization}" за технологією "${selectedTechnology}". Формулюй запитання мовою ${selectedLanguage}, орієнтуючись на актуальні знання та практики.`;
+    setInterviewQuestionsPrompt(prompt)
+  }, [selectedLanguage, selectedSpecialization, selectedTechnology, selectedQuestionCount]);
 
   useEffect(() => {
-    if (answer) {
-      const check = `Питання: ${question}. Моя відповідь: ${answer}. Чи правильна ця відповідь? Відповідай чітко, коротко і без зайвих пояснень на ${languageChoice} мовою..`;
-      setQuestionToCheck(check);
+    if (currentAnswer) {
+      const prompt = `Питання: ${currentQuestion}. Моя відповідь: ${currentAnswer}. Чи правильна ця відповідь? Відповідай чітко, коротко і без зайвих пояснень мовою ${selectedLanguage}.`;
+      setAnswerReviewPrompt(prompt);
     }
-  }, [answer, questionToCheck]);
+  }, [currentAnswer, currentQuestion, selectedLanguage]);
 
   useEffect(() => {
-    if (start && requestQuestionsList.length > 0) {
-      setQuestion(requestQuestionsList[countQuestionRef.current])
+    if (interviewStarted && generatedQuestions.length > 0) {
+      setCurrentQuestion(generatedQuestions[currentQuestionIndexRef.current])
     } else {
-      countQuestionRef.current = 0
-      setQuestion('')
+      currentQuestionIndexRef.current = 0
+      setCurrentQuestion('')
     }
 
-    setNextQuestion(false)
-  }, [requestQuestionsList, nextQuestion, start]);
+    setShouldAdvanceQuestion(false)
+  }, [generatedQuestions, shouldAdvanceQuestion, interviewStarted]);
 
   useEffect(() => {
     if (!isRecording && transcript) {
-      setAnswer(transcript)
-      userElementRef.current?.classList.remove(stylesTalking['user-container-active']);
+      setCurrentAnswer(transcript)
+      userBubbleRef.current?.classList.remove(stylesTalking['user-container-active']);
     }
   }, [isRecording, transcript]);
 
   useEffect(() => {
-    if (questionToCheck) {
-      handleSubmit();
+    if (answerReviewPrompt) {
+      handleAiRequest();
     }
-  }, [questionToCheck]);
+  }, [answerReviewPrompt]);
 
-  const handleStartRecordingVoice = () => {
+  const handleVoiceRecordingToggle = () => {
     if (isRecording) {
       stopRecording()
     } else {
       startRecording()
-      if (userElementRef.current) {
-        userElementRef.current.classList.add(stylesTalking['user-container-active']);
-      }
+      userBubbleRef.current?.classList.add(stylesTalking['user-container-active']);
     }
   };
 
-  const handleSubmit = async () => {
-    setStart(true)
+  const handleAiRequest = async () => {
+    setInterviewStarted(true)
 
     try {
-      const res = await fetch('/api/ai', {
+      const response = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [
-            { role: 'user', content: questionToCheck ? questionToCheck : questionGeneratorInput }
+            { role: 'user', content: answerReviewPrompt || interviewQuestionsPrompt }
           ],
         }),
       });
 
-      if (res.status === 504) {
-        throw new Error('Сервер не відповів вчасно (504). Спробуйте пізніше або зменшіть кількість запитань.');
-      }
-  
-      if (!res.ok) {
-        throw new Error(`Сталася помилка: ${res.status} ${res.statusText}`);
+      if (response.status === 504) {
+        throw new Error('Сервер не відповів вчасно (504). Спробуйте пізніше або зменште кількість запитань.');
       }
 
-      const data = await res.json();
+      if (!response.ok) {
+        throw new Error(`Сталася помилка: ${response.status} ${response.statusText}`);
+      }
 
-      if (data) {
-        if (questionToCheck) {
-          setRequestQuestion(data.response.replace(/\*\*/g, '').trim())
-        } else {
-          setRequestQuestionsList(data.response
-            .split('\n')
-            .filter((line: string) => /^\d+\.\s/.test(line))
-            .map((line: string) =>
-              line
-                .replace(/^\d+\.\s*/, '')
-                .replace(/\*\*/g, '')
-                .trim()
-            )
+      const data = await response.json();
+
+      if (!data) return;
+
+      if (answerReviewPrompt) {
+        setAiFeedback(data.response.replace(/\*\*/g, '').trim())
+        return;
+      }
+
+      setGeneratedQuestions(
+        data.response
+          .split('\n')
+          .filter((line: string) => /^\d+\.\s/.test(line))
+          .map((line: string) =>
+            line
+              .replace(/^\d+\.\s*/, '')
+              .replace(/\*\*/g, '')
+              .trim()
           )
-        }
-      }
+      )
     } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message)
@@ -165,61 +174,72 @@ const Home = () => {
     }
   };
 
-  const handleSpeekAi = () => {
-    if (aiElementRef.current) {
-      aiElementRef.current.classList.add(stylesTalking['ai-container-active'])
+  const handleSpeakAi = () => {
+    aiBubbleRef.current?.classList.add(stylesTalking['ai-container-active'])
+
+    if (aiFeedback) {
+      speakText({
+        feedback: aiFeedback,
+        language: selectedLanguage,
+        aiBubbleRef,
+        setIsSpeaking,
+        setIsLastSpeaking
+      });
+      return;
     }
-    if (requestQuestion) {
-      speakText({ requestQuestion, languageChoice, aiElementRef, setIsSpeaking, setLastSpeaking });
-    } else {
-      speakText({ question, languageChoice, aiElementRef, setIsSpeaking, setLastSpeaking });
-    }
+
+    speakText({
+      question: currentQuestion,
+      language: selectedLanguage,
+      aiBubbleRef,
+      setIsSpeaking,
+      setIsLastSpeaking
+    });
   }
 
-  const handleNextAnswer = () => {
-    countQuestionRef.current += 1;
-    setAnswer('')
-    setRequestQuestion('')
-    setLastSpeaking(false)
+  const handleNextQuestion = () => {
+    currentQuestionIndexRef.current += 1;
+    setCurrentAnswer('')
+    setAiFeedback('')
+    setIsLastSpeaking(false)
     speechSynthesis.cancel();
 
-    if (countQuestionRef.current < requestQuestionsList.length) {
-      setNextQuestion(true)
+    if (currentQuestionIndexRef.current < generatedQuestions.length) {
+      setShouldAdvanceQuestion(true)
     } else {
-      handleStop();
+      handleStopInterview();
     }
   }
 
-  const handleStop = () => {
+  const handleStopInterview = () => {
     speechSynthesis.cancel();
     setIsSpeaking(false);
-    setRequestQuestionsList([]);
-    setRequestQuestion('');
-    setQuestionToCheck('')
-    setQuestion('');
-    setAnswer('');
-    setStart(false);
-    setLastSpeaking(false);
+    setGeneratedQuestions([]);
+    setAiFeedback('');
+    setAnswerReviewPrompt('')
+    setCurrentQuestion('');
+    setCurrentAnswer('');
+    setInterviewStarted(false);
+    setIsLastSpeaking(false);
     setErrorMessage('')
   };
 
   return (
     <div className={styles.wrapper}>
       <Header />
-      <InformationProfession hideInfo={start} />
-      <NavigationSettings onClick={handleSubmit} hideSetting={start} />
+      <InformationSpecialization hideInfo={interviewStarted} />
+      <NavigationSettings onClick={handleAiRequest} hideSetting={interviewStarted} />
       <main className={styles.main}>
-        {start &&
+        {interviewStarted &&
           <>
-            {requestQuestionsList.length === 0
+            {generatedQuestions.length === 0
               ? (
                 <section className={styles['block-loading']}>
                   {errorMessage ? (
                     <p className={styles['message-error']}>{errorMessage}</p>
                   ) : (
-                    <p >Тільки не панікуйте… ще є шанс втекти. Жартую — вже пізно 😁 Починаємо!</p>
-                  )
-                  }
+                    <p>Готуємо запитання для тренувальної співбесіди. Зачекай ще мить.</p>
+                  )}
                   <div className={styles.strip}></div>
                 </section>
               ) : (
@@ -227,23 +247,22 @@ const Home = () => {
                   <>
                     {!errorMessage ? (
                       <>
-                        <div className={(isRecording || isSpeaking || answer) ? `${styles['block-character']} ${styles.disabled}` : `${styles['block-character']}`}>
-                          <TalkingCharacter person='aiSpeechBubble' ref={aiElementRef} onClick={handleSpeekAi} />
-                          <TalkingCharacter person='userSpeechBubble' ref={userElementRef} onClick={handleStartRecordingVoice} />
+                        <div className={(isRecording || isSpeaking || currentAnswer) ? `${styles['block-character']} ${styles.disabled}` : `${styles['block-character']}`}>
+                          <TalkingCharacter speaker='ai' ref={aiBubbleRef} onClick={handleSpeakAi} />
+                          <TalkingCharacter speaker='user' ref={userBubbleRef} onClick={handleVoiceRecordingToggle} />
                         </div>
                         <div className={styles['text-block']}>
-                          <p className={styles.question}>{requestQuestion ? requestQuestion : question}</p>
-                          <p className={answer ? styles.answer : styles['answer-empty']}>{answer}</p>
+                          <p className={styles.question}>{aiFeedback || currentQuestion}</p>
+                          <p className={currentAnswer ? styles.answer : styles['answer-empty']}>{currentAnswer}</p>
                         </div>
                       </>
                     ) : (
                       <p className={styles['message-error']}>{errorMessage}</p>
                     )}
-
                   </>
                   <div className={styles['block-button']}>
-                    <button onClick={handleNextAnswer}>Наступне питання</button>
-                    <button onClick={handleStop}>Закінчити співбесіду</button>
+                    <button onClick={handleNextQuestion}>Наступне питання</button>
+                    <button onClick={handleStopInterview}>Закінчити співбесіду</button>
                   </div>
                 </section>
               )}
