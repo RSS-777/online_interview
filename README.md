@@ -1,24 +1,33 @@
 # 🎯 AI Interview Web App
 
-**This is more than just training — it's your first step towards a successful career.**  
-The dream job is closer than you think: a realistic interview with artificial intelligence in a safe environment,  
-where mistakes are experience, and experience is the power that helps unlock your potential.
+A realistic AI-powered interview simulator designed to help developers practice technical interviews in a safe and adaptive environment.
+
+The goal of this project is to provide structured interview practice where users can improve through repetition, feedback, and interaction with AI.
 
 ---
 
+## 💡 Overview
 
-## 💡 About the Project
+This application simulates a real technical interview with an AI assistant.
 
-This app allows you to undergo an interactive interview with AI.
-You can communicate with the AI using your voice, and it will ask you questions directly related to the chosen profession, staying on-topic throughout the conversation. The AI will guide the interview without straying from the relevant subject matter, providing a focused and meaningful experience.
+The AI dynamically generates questions based on user-selected settings and keeps the conversation focused on the chosen technical direction.
 
-The user can choose:
+### Users can configure:
+
 - **Communication Language**: 🇺🇦 Ukrainian, 🇷🇺 Russian, 🇬🇧 English
-- **Profession**: Frontend / Backend / Fullstack / DevOps / QA / PM / Designer / Data Scientist, etc.
-- **Knowledge Category** within the chosen profession
+- **Specialization**: Frontend / Backend / Mobile / UI/UX Design
+- **Technology**: Context-specific stack based on specialization (e.g. React, Node.js, Flutter, Figma, etc.)
+- **Question Count**: Number of questions in the interview session
 
-> ⚠️ **Note!** The quality of voice synthesis (including Ukrainian, English and other languages) depends on the language settings of your device.
-This is a demo project and the paid LLM APIs were not used to avoid unnecessary costs during testing.
+The interview adapts in real-time based on these selections.
+
+---
+
+## 🎤 Voice Support
+
+The application supports voice interaction depending on browser and device capabilities.
+
+> ⚠️ Note: Voice synthesis and recognition quality may vary depending on system language and browser support.
 
 ---
 
@@ -34,7 +43,27 @@ This is a demo project and the paid LLM APIs were not used to avoid unnecessary 
 
 ---
 
+## 🚀 Purpose
+
+This project demonstrates how modern frontend applications can integrate AI features and manage dynamic user flows based on state.
+
+It focuses on:
+- AI integration in a web application
+- State-driven UI logic
+- Conditional rendering based on user configuration
+- Interaction with an LLM API
+
+---
+
+## 💰 LLM Usage
+
+This is a demo project.  
+Paid LLM APIs were not used to avoid unnecessary costs during development and testing.
+
+---
+
 ### Screenshots
+
 <div style="display: flex; gap: 8px; flex-direction: column;">
     <img src="./public/screenshots/Screenshot 1.png" />
     <img src="./public/screenshots/Screenshot 2.png" />
